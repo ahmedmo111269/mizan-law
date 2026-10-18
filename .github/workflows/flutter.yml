@@ -49,7 +49,10 @@ jobs:
             echo "Running $test_file"
             timeout --signal=TERM --kill-after=10s 120s flutter test --reporter expanded --timeout=2m "$test_file"
             status=$?
-            if [ "$status" -ne 0 ]; then exit "$status"; fi
+            if [ "$status" -ne 0 ]; then
+              echo "::error::Flutter test file failed or timed out: $test_file (exit code $status)"
+              exit "$status"
+            fi
           done
 
       - name: Run SQLite migration and integrity contract tests
