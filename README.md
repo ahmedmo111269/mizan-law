@@ -206,7 +206,7 @@
 
 ## حالة المشروع وفهرس الوثائق التأسيسية
 
-الحالة: **أُغلقت القرارات المعمارية السلوكية الـ45 توثيقيًا**؛ لا تطبيق أو قاعدة بيانات أو تصميم تنفيذي أو اختيار تقني. الجاهزية للمراجعة ثم النموذج المفاهيمي بتكليف لاحق، دون انتقال تلقائي. تبقى طرق التنفيذ والتفاصيل التخصصية مؤجلة. PR #6 مدمج سابقًا؛ هذه الدفعة على فرع مستقل نشط، وPR #2 باقٍ مفتوحًا دون تعديل.
+الحالة: **أُغلقت القرارات المعمارية السلوكية الـ45 توثيقيًا**؛ لا تطبيق أو قاعدة بيانات أو تصميم تنفيذي أو اختيار تقني. الجاهزية للمراجعة ثم النموذج المفاهيمي بتكليف لاحق، دون انتقال تلقائي. تبقى طرق التنفيذ والتفاصيل التخصصية مؤجلة. PR #6 مدمج سابقًا؛ هذه الدفعة على فرع مستقل نشط، وPR #2 باقٍ مفتوحًا دون تعديل. وأُضيفت **حزمة تصميم وحدة الموكلين** (`docs/clients/`) توثيقيًا ومقترحة بانتظار الاعتماد، دون تعديل أي قرار قائم.
 
 - [رؤية المشروع](docs/PROJECT_VISION.md)
 - [المتطلبات](docs/REQUIREMENTS.md)
@@ -227,3 +227,22 @@
 - [مراجعة المرحلة التأسيسية — سجل تاريخي](docs/FOUNDATION_REVIEW.md)
 - [حزمة القرارات المعمارية المحسومة](docs/ARCHITECTURE_DECISION_PACKET.md)
 - [تقرير إغلاق المرحلة ومراجعة PR #2](docs/ARCHITECTURE_CLOSURE_REPORT.md)
+
+### تصميم وحدة الموكلين — مرحلة توثيقية مقترحة
+
+تصميم وظيفي وتجربة استخدام ونموذج بيانات منطقي وعقود تكامل لوحدة «الموكلين»، **مقترح بانتظار الاعتماد**، ولا يمسّ أي قرار معتمد ولا يختار تقنية ولا ينشئ قاعدة بيانات. التفاصيل في [فهرس الوحدة](docs/clients/README.md).
+
+- [فهرس وثائق وحدة الموكلين](docs/clients/README.md)
+- [رؤية الوحدة وحدودها](docs/clients/CLIENTS_MODULE_VISION.md)
+- [رحلات المستخدم](docs/clients/CLIENTS_USER_JOURNEYS.md)
+- [بنية المعلومات والشاشات](docs/clients/CLIENTS_INFORMATION_ARCHITECTURE.md)
+- [مواصفات تجربة الاستخدام](docs/clients/CLIENTS_UX_SPECIFICATION.md)
+- [نموذج البيانات المنطقي](docs/clients/CLIENTS_DATA_MODEL.md)
+- [جودة البيانات والتكرار](docs/clients/CLIENTS_DATA_QUALITY.md)
+- [البحث والتصفية](docs/clients/CLIENTS_SEARCH_AND_FILTERS.md)
+- [منظومة التخصيص](docs/clients/CLIENTS_CUSTOMIZATION.md)
+- [عقود التكامل](docs/clients/CLIENTS_INTEGRATION_CONTRACTS.md)
+- [التحقق بالسيناريوهات](docs/clients/CLIENTS_SCENARIO_VALIDATION.md)
+- [النطاق وخطة التنفيذ](docs/clients/CLIENTS_SCOPE_AND_ROADMAP.md)
+- [القرارات المطلوبة](docs/clients/CLIENTS_OPEN_DECISIONS.md)
+- [تقرير مرحلة التصميم](docs/clients/CLIENTS_DESIGN_PHASE_REPORT.md)
