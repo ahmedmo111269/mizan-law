@@ -1,0 +1,194 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+import '../../lib/src/app_controller.dart';
+import '../../lib/src/domain/models.dart';
+import '../../lib/src/app.dart';
+import '../../lib/src/shared/mizan_theme.dart';
+import '../support/test_office.dart';
+
+Future<AppController> _mountApp(WidgetTester tester, TestOffice office) async {
+  final controller = AppController(office.database);
+  await controller.initialize();
+  await tester.pumpWidget(
+    MaterialApp(
+      locale: const Locale('ar'),
+      supportedLocales: const <Locale>[Locale('ar')],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+      theme: MizanTheme.light,
+      darkTheme: MizanTheme.dark,
+      home: AppShell(controller: controller),
+    ),
+  );
+  await tester.pumpAndSettle();
+  return controller;
+}
+
+void main() {
+  testWidgets('first-run home shows a genuine empty state and client actions', (tester) async {
+    final office = await TestOffice.create();
+    final controller = await _mountApp(tester, office);
+    addTearDown(() async {
+      await tester.pumpWidget(const SizedBox.shrink());
+      controller.dispose();
+      await office.close();
+    });
+
+    expect(find.text('مكتب اليوم'), findsWidgets);
+    expect(find.text('لا يوجد موكلون في هذه القاعدة بعد'), findsOneWidget);
+    expect(find.text('إضافة موكل'), findsOneWidget);
+    expect(find.text('إضافة قضية'), findsNothing);
+    expect(find.text('إضافة جلسة'), findsNothing);
+  });
+
+  testWidgets('navigation reaches clients and a real client can be added from a quick action',
+      (tester) async {
+    final office = await TestOffice.create();
+    final controller = await _mountApp(tester, office);
+    addTearDown(() async {
+      await tester.pumpWidget(const SizedBox.shrink());
+      controller.dispose();
+      await office.close();
+    });
+
+    await tester.tap(find.text('الموكلون').last);
+    await tester.pumpAndSettle();
+    expect(find.text('لا يوجد موكلون نشطون في هذه القاعدة'), findsOneWidget);
+
+    await tester.tap(find.text('إضافة موكل').last);
+    await tester.pumpAndSettle();
+    expect(find.text('ابحث قبل إنشاء هوية'), findsOneWidget);
+
+    final nameField = find.byWidgetPredicate(
+      (widget) => widget is TextFormField && widget.decoration?.labelText == 'الاسم',
+    );
+    await tester.enterText(nameField, 'موكل اختبار واجهة');
+    await tester.pump(const Duration(milliseconds: 350));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('حفظ الموكل'));
+    await tester.pumpAndSettle();
+
+    expect(await office.clients.countClients(), 1);
+    expect(find.text('موكل اختبار واجهة'), findsOneWidget);
+  });
+
+  testWidgets('home search opens a real database-backed client card', (tester) async {
+    final office = await TestOffice.create();
+    final controller = await _mountApp(tester, office);
+    addTearDown(() async {
+      await tester.pumpWidget(const SizedBox.shrink());
+      controller.dispose();
+      await office.close();
+    });
+    await office.clients.createClient(
+      operationId: 'widget-search-operation',
+      newPerson: const PersonDraft(
+        kind: PersonKind.natural,
+        displayName: 'موكل اختبار بحث حقيقي',
+      ),
+    );
+    controller.markDataChanged();
+    await tester.pumpAndSettle();
+
+    final search = find.byWidgetPredicate(
+      (widget) => widget is TextField &&
+          widget.decoration?.labelText == 'اسم أو هاتف أو بريد إلكتروني',
+    );
+    await tester.enterText(search, 'موكل اختبار بحث');
+    await tester.pump(const Duration(milliseconds: 320));
+    await tester.pumpAndSettle();
+    expect(find.text('موكل اختبار بحث حقيقي'), findsOneWidget);
+
+    await tester.tap(find.text('موكل اختبار بحث حقيقي'));
+    await tester.pumpAndSettle();
+    expect(find.text('بطاقة الموكل'), findsOneWidget);
+    expect(find.text('موكل اختبار بحث حقيقي'), findsOneWidget);
+    expect(find.textContaining('لم تُنفّذ وحداتها بعد'), findsOneWidget);
+  });
+
+  testWidgets('reusing a shared identity requires an explicit user confirmation', (tester) async {
+    final office = await TestOffice.create();
+    final firstClient = await office.clients.createClient(
+      operationId: 'shared-identity-original',
+      newPerson: const PersonDraft(
+        kind: PersonKind.natural,
+        displayName: 'هوية اختبار مشتركة',
+        phone: '01012345678',
+      ),
+    );
+    await office.database.createWorkspace('قاعدة إعادة استخدام اختبار');
+    final controller = await _mountApp(tester, office);
+    addTearDown(() async {
+      await tester.pumpWidget(const SizedBox.shrink());
+      controller.dispose();
+      await office.close();
+    });
+
+    await tester.tap(find.text('الموكلون').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('إضافة موكل').last);
+    await tester.pumpAndSettle();
+    final nameField = find.byWidgetPredicate(
+      (widget) => widget is TextFormField && widget.decoration?.labelText == 'الاسم',
+    );
+    await tester.enterText(nameField, 'هوية اختبار مشتركة');
+    await tester.pump(const Duration(milliseconds: 350));
+    await tester.pumpAndSettle();
+    expect(find.text('استخدام'), findsOneWidget);
+
+    await tester.tap(find.text('استخدام'));
+    await tester.pumpAndSettle();
+    expect(find.text('تأكيد استخدام هوية مشتركة'), findsOneWidget);
+    await tester.tap(find.text('تأكيد أنها الهوية نفسها'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('استخدام الهوية وإضافة الموكل'));
+    await tester.pumpAndSettle();
+
+    final added = (await office.clients.listClients()).items.single;
+    expect(added.person.id, firstClient.person.id);
+    expect(await office.clients.countClients(), 1);
+  });
+
+  testWidgets('responsive shell has no layout exception at required widths', (tester) async {
+    final office = await TestOffice.create();
+    final controller = await _mountApp(tester, office);
+    addTearDown(() async {
+      await tester.pumpWidget(const SizedBox.shrink());
+      controller.dispose();
+      await office.close();
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    for (final width in <double>[320, 360, 390, 768, 1024, 1440]) {
+      tester.view.devicePixelRatio = 2;
+      tester.view.physicalSize = Size(width * 2, 1600);
+      await tester.pump();
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull, reason: 'layout failed at $width px');
+      expect(find.text('مكتب اليوم'), findsWidgets);
+      expect(find.text('ميزان'), findsOneWidget);
+    }
+  });
+
+  testWidgets('opening the client centre from home preserves search scope', (tester) async {
+    final office = await TestOffice.create();
+    final controller = await _mountApp(tester, office);
+    addTearDown(() async {
+      await tester.pumpWidget(const SizedBox.shrink());
+      controller.dispose();
+      await office.close();
+    });
+
+    final search = find.byWidgetPredicate(
+      (widget) => widget is TextField &&
+          widget.decoration?.labelText == 'اسم أو هاتف أو بريد إلكتروني',
+    );
+    await tester.enterText(search, 'نص بحث اختبار');
+    await tester.tap(find.text('البحث في مركز الموكلين'));
+    await tester.pumpAndSettle();
+    expect(find.text('بحث في موكلي هذه القاعدة'), findsOneWidget);
+    expect(find.text('نص بحث اختبار'), findsOneWidget);
+  });
+}

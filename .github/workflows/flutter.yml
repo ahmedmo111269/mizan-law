@@ -1,0 +1,81 @@
+name: Flutter application checks
+
+on:
+  push:
+    branches: [main, 'arena/**']
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-android:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Generate Windows and Android runners
+        run: flutter create . --platforms=windows,android --org com.mizanlaw --project-name mizan_law
+
+      - name: Resolve dependencies
+        run: flutter pub get
+
+      - name: Analyze Dart source
+        run: flutter analyze
+
+      - name: Run Flutter tests
+        run: flutter test --reporter expanded
+
+      - name: Run SQLite migration and integrity contract tests
+        run: python3 scripts/test_sqlite_contract.py
+
+      - name: Build Android debug APK
+        run: flutter build apk --debug
+
+      - name: Export generated native runner templates
+        if: always()
+        run: |
+          mkdir -p /tmp/mizan-platform-scaffold
+          cp -R android windows /tmp/mizan-platform-scaffold/ 2>/dev/null || true
+          cp pubspec.lock /tmp/mizan-platform-scaffold/ 2>/dev/null || true
+          cp .metadata /tmp/mizan-platform-scaffold/ 2>/dev/null || true
+          find /tmp/mizan-platform-scaffold -name local.properties -delete
+          tar -czf /tmp/mizan-platform-scaffold.tar.gz -C /tmp mizan-platform-scaffold
+
+      - name: Upload generated platform runners
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-windows-android-runners
+          path: /tmp/mizan-platform-scaffold.tar.gz
+          if-no-files-found: ignore
+          retention-days: 7
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Generate Windows runner
+        run: flutter create . --platforms=windows --org com.mizanlaw --project-name mizan_law
+
+      - name: Resolve dependencies
+        run: flutter pub get
+
+      - name: Build Windows release
+        run: flutter build windows --release

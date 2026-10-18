@@ -1,0 +1,33 @@
+# Flutter / Dart
+.dart_tool/
+__pycache__/
+*.py[cod]
+.packages
+.pub-cache/
+.pub/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Local application databases and runtime data
+*.sqlite
+*.sqlite3
+*.db
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+*.db-journal
+*.db-wal
+*.db-shm
+mizan-local-data/
+
+# Generated native builds / IDE / OS
+android/local.properties
+android/.gradle/
+android/app/.cxx/
+windows/flutter/ephemeral/
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
