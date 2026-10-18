@@ -2,7 +2,7 @@ name: Flutter application checks
 
 on:
   push:
-    branches: [main, 'arena/**']
+    branches: [main]
   pull_request:
     branches: [main]
 
@@ -29,7 +29,17 @@ jobs:
         run: flutter pub get
 
       - name: Analyze Dart source
-        run: flutter analyze
+        run: |
+          set +e
+          flutter analyze > analyze-output.txt 2>&1
+          status=$?
+          cat analyze-output.txt
+          if [ "$status" -ne 0 ]; then
+            while IFS= read -r line; do
+              echo "::error::${line//'%'/'%25'}"
+            done < analyze-output.txt
+          fi
+          exit "$status"
 
       - name: Run Flutter tests
         run: flutter test --reporter expanded
@@ -78,4 +88,15 @@ jobs:
         run: flutter pub get
 
       - name: Build Windows release
-        run: flutter build windows --release
+        shell: bash
+        run: |
+          set +e
+          flutter build windows --release > windows-build-output.txt 2>&1
+          status=$?
+          cat windows-build-output.txt
+          if [ "$status" -ne 0 ]; then
+            while IFS= read -r line; do
+              echo "::error::${line//'%'/'%25'}"
+            done < windows-build-output.txt
+          fi
+          exit "$status"
