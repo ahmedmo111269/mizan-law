@@ -64,6 +64,7 @@ void main() {
       of: find.byKey(const ValueKey<String>('client-name-field')),
       matching: find.byType(EditableText),
     );
+    expect(nameField, findsOneWidget);
     await tester.enterText(nameField, 'موكل اختبار واجهة');
     await tester.pump(const Duration(milliseconds: 350));
     await pumpUi(tester);
@@ -139,6 +140,7 @@ void main() {
       of: find.byKey(const ValueKey<String>('client-name-field')),
       matching: find.byType(EditableText),
     );
+    expect(nameField, findsOneWidget);
     await tester.enterText(nameField, 'هوية اختبار مشتركة');
     await tester.pump(const Duration(milliseconds: 350));
     await pumpUi(tester);
