@@ -61,7 +61,8 @@ void main() {
     expect(find.text('ابحث قبل إنشاء هوية'), findsOneWidget);
 
     final nameField = find.byWidgetPredicate(
-      (widget) => widget is TextFormField && widget.decoration?.labelText == 'الاسم',
+      (widget) =>
+          widget is InputDecorator && widget.decoration.labelText == 'الاسم',
     );
     await tester.enterText(nameField, 'موكل اختبار واجهة');
     await tester.pump(const Duration(milliseconds: 350));
@@ -130,7 +131,8 @@ void main() {
     await tester.tap(find.text('إضافة موكل').last);
     await tester.pumpAndSettle();
     final nameField = find.byWidgetPredicate(
-      (widget) => widget is TextFormField && widget.decoration?.labelText == 'الاسم',
+      (widget) =>
+          widget is InputDecorator && widget.decoration.labelText == 'الاسم',
     );
     await tester.enterText(nameField, 'هوية اختبار مشتركة');
     await tester.pump(const Duration(milliseconds: 350));
