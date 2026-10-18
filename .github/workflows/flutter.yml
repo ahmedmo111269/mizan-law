@@ -1,0 +1,128 @@
+name: Flutter application checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Generate Windows and Android runners
+        run: flutter create . --platforms=windows,android --org com.mizanlaw --project-name mizan_law
+
+      - name: Resolve dependencies
+        run: flutter pub get
+
+      - name: Analyze Dart source
+        run: |
+          set +e
+          flutter analyze > analyze-output.txt 2>&1
+          status=$?
+          cat analyze-output.txt
+          if [ "$status" -ne 0 ]; then
+            while IFS= read -r line; do
+              echo "::error::${line//'%'/'%25'}"
+            done < analyze-output.txt
+          fi
+          exit "$status"
+
+      - name: Run Arabic normalization tests
+        run: timeout --signal=TERM --kill-after=10s 120s flutter test --reporter expanded --timeout=2m test/clients/arabic_normalizer_test.dart
+
+      - name: Run client repository tests
+        run: timeout --signal=TERM --kill-after=10s 120s flutter test --reporter expanded --timeout=2m test/clients/client_repository_test.dart
+
+      - name: Run office database tests
+        run: timeout --signal=TERM --kill-after=10s 120s flutter test --reporter expanded --timeout=2m test/database/office_database_test.dart
+
+      - name: Run app shell smoke test
+        run: timeout --signal=TERM --kill-after=10s 120s flutter test --reporter expanded --timeout=2m test/widget_test.dart
+
+      - name: Run home navigation and responsive UI tests
+        run: |
+          set +e
+          timeout --signal=TERM --kill-after=10s 120s \
+            flutter test --reporter expanded --timeout=2m test/widgets/home_navigation_test.dart \
+            > home-navigation-test.log 2>&1
+          status=$?
+          cat home-navigation-test.log
+          if [ "$status" -ne 0 ]; then
+            tail -n 40 home-navigation-test.log | while IFS= read -r line; do
+              escaped=${line//'%'/'%25'}
+              echo "::error title=Home navigation test output::$escaped"
+            done
+          fi
+          exit "$status"
+
+      - name: Run SQLite migration and integrity contract tests
+        run: python3 scripts/test_sqlite_contract.py
+
+      - name: Build Android debug APK
+        run: flutter build apk --debug
+
+      - name: Export generated native runner templates
+        if: always()
+        run: |
+          mkdir -p /tmp/mizan-platform-scaffold
+          cp -R android windows /tmp/mizan-platform-scaffold/ 2>/dev/null || true
+          cp pubspec.lock /tmp/mizan-platform-scaffold/ 2>/dev/null || true
+          cp .metadata /tmp/mizan-platform-scaffold/ 2>/dev/null || true
+          find /tmp/mizan-platform-scaffold -name local.properties -delete
+          tar -czf /tmp/mizan-platform-scaffold.tar.gz -C /tmp mizan-platform-scaffold
+
+      - name: Upload generated platform runners
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-windows-android-runners
+          path: /tmp/mizan-platform-scaffold.tar.gz
+          if-no-files-found: ignore
+          retention-days: 7
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Generate Windows runner
+        run: flutter create . --platforms=windows --org com.mizanlaw --project-name mizan_law
+
+      - name: Resolve dependencies
+        run: flutter pub get
+
+      - name: Build Windows release
+        shell: bash
+        run: |
+          set +e
+          flutter build windows --release > windows-build-output.txt 2>&1
+          status=$?
+          cat windows-build-output.txt
+          if [ "$status" -ne 0 ]; then
+            while IFS= read -r line; do
+              echo "::error::${line//'%'/'%25'}"
+            done < windows-build-output.txt
+          fi
+          exit "$status"
