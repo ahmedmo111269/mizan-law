@@ -60,10 +60,7 @@ void main() {
     await pumpUi(tester);
     expect(find.text('ابحث قبل إنشاء هوية'), findsOneWidget);
 
-    final nameField = find.descendant(
-      of: find.byKey(const ValueKey<String>('client-name-field')),
-      matching: find.byType(EditableText),
-    );
+    final nameField = find.byKey(const ValueKey<String>('client-name-field'));
     expect(nameField, findsOneWidget);
     await tester.enterText(nameField, 'موكل اختبار واجهة');
     await tester.pump(const Duration(milliseconds: 350));
@@ -136,10 +133,7 @@ void main() {
     await pumpUi(tester);
     await tester.tap(find.text('إضافة موكل').last);
     await pumpUi(tester);
-    final nameField = find.descendant(
-      of: find.byKey(const ValueKey<String>('client-name-field')),
-      matching: find.byType(EditableText),
-    );
+    final nameField = find.byKey(const ValueKey<String>('client-name-field'));
     expect(nameField, findsOneWidget);
     await tester.enterText(nameField, 'هوية اختبار مشتركة');
     await tester.pump(const Duration(milliseconds: 350));
