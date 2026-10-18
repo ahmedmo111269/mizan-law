@@ -201,3 +201,25 @@
 
 وهذا لا يعني ضرورة استخدام عدة قواعد لتحمل ملايين السجلات؛ فقد تستطيع قاعدة واحدة مصممة جيدًا استيعاب هذا الحجم.
 
+
+---
+
+## حالة المشروع وفهرس الوثائق التأسيسية
+
+الحالة: **مرحلة تأسيس توثيقية**؛ لا يتضمن هذا التسليم تطبيقًا أو قاعدة بيانات.
+
+- [رؤية المشروع](docs/PROJECT_VISION.md)
+- [المتطلبات](docs/REQUIREMENTS.md)
+- [نموذج المجال](docs/DOMAIN_MODEL.md)
+- [سلامة البيانات](docs/DATA_INTEGRITY.md)
+- [استراتيجية تعدد قواعد البيانات](docs/DATABASE_STRATEGY.md)
+- [المزامنة](docs/SYNC_REQUIREMENTS.md)
+- [الأمان](docs/SECURITY_REQUIREMENTS.md)
+- [المحاسبة](docs/ACCOUNTING_REQUIREMENTS.md)
+- [المستندات](docs/DOCUMENT_REQUIREMENTS.md)
+- [الأداء](docs/PERFORMANCE_REQUIREMENTS.md)
+- [النسخ الاحتياطي والاستعادة](docs/BACKUP_REQUIREMENTS.md)
+- [القرارات التقنية المعلقة](docs/TECHNICAL_DECISIONS_PENDING.md)
+- [القرارات المعتمدة](docs/DECISIONS.md)
+- [الأسئلة المفتوحة](docs/OPEN_QUESTIONS.md)
+- [خارطة الطريق](docs/ROADMAP.md)
