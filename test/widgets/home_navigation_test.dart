@@ -8,6 +8,17 @@ import 'package:mizan_law/src/domain/models.dart';
 import 'package:mizan_law/src/shared/mizan_theme.dart';
 import '../support/test_office.dart';
 
+Finder _textInputForLabel(String label) {
+  final decoration = find.ancestor(
+    of: find.text(label),
+    matching: find.byType(InputDecorator),
+  );
+  return find.descendant(
+    of: decoration,
+    matching: find.byType(EditableText),
+  );
+}
+
 Future<AppController> _mountApp(WidgetTester tester, TestOffice office) async {
   final controller = AppController(office.database);
   await tester.runAsync(controller.initialize);
@@ -60,10 +71,7 @@ void main() {
     await pumpUi(tester);
     expect(find.text('ابحث قبل إنشاء هوية'), findsOneWidget);
 
-    final nameField = find.byWidgetPredicate(
-      (widget) =>
-          widget is InputDecorator && widget.decoration.labelText == 'الاسم',
-    );
+    final nameField = _textInputForLabel('الاسم');
     await tester.enterText(nameField, 'موكل اختبار واجهة');
     await tester.pump(const Duration(milliseconds: 350));
     await pumpUi(tester);
@@ -135,10 +143,7 @@ void main() {
     await pumpUi(tester);
     await tester.tap(find.text('إضافة موكل').last);
     await pumpUi(tester);
-    final nameField = find.byWidgetPredicate(
-      (widget) =>
-          widget is InputDecorator && widget.decoration.labelText == 'الاسم',
-    );
+    final nameField = _textInputForLabel('الاسم');
     await tester.enterText(nameField, 'هوية اختبار مشتركة');
     await tester.pump(const Duration(milliseconds: 350));
     await pumpUi(tester);
