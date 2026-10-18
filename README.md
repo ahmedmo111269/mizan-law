@@ -24,7 +24,7 @@ flutter test --reporter expanded
 python3 scripts/test_sqlite_contract.py
 ```
 
-اختبارات Dart تحتاج Flutter SDK؛ عند إعداد هذه الدفعة في البيئة الحالية نجحت اختبارات SQLite التسعة عبر Python، بينما لم يتوفر Flutter/Dart لتشغيل التحليل أو اختبارات الواجهة. انظر [دليل الإعداد والاختبار](docs/implementation/DEVELOPMENT.md) و[ملخص التنفيذ](docs/implementation/IMPLEMENTATION_OVERVIEW.md).
+اختبارات Dart تحتاج Flutter SDK؛ لم يتوفر Flutter/Dart في بيئة العمل المحلية، لذلك لم تُشغّل محليًا. اجتاز GitHub Actions في التشغيل [39157599446](https://github.com/ahmedmo111269/mizan-law/actions/runs/39157599446) التحليل واختبارات Dart وSQLite وبناء Android debug وWindows release. يثبت ذلك خطوات CI المحددة، لا التشغيل على جهاز فعلي أو الجاهزية للإنتاج. انظر [دليل الإعداد والاختبار](docs/implementation/DEVELOPMENT.md) و[تقرير الاختبارات](docs/implementation/TEST_REPORT.md) و[ملخص التنفيذ](docs/implementation/IMPLEMENTATION_OVERVIEW.md).
 
 ---
 
