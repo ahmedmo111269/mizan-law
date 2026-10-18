@@ -10,7 +10,7 @@ import '../support/test_office.dart';
 
 Future<AppController> _mountApp(WidgetTester tester, TestOffice office) async {
   final controller = AppController(office.database);
-  await controller.initialize();
+  await tester.runAsync(controller.initialize);
   await tester.pumpWidget(
     MaterialApp(
       locale: const Locale('ar'),
@@ -27,12 +27,12 @@ Future<AppController> _mountApp(WidgetTester tester, TestOffice office) async {
 
 void main() {
   testWidgets('first-run home shows a genuine empty state and client actions', (tester) async {
-    final office = await TestOffice.create();
+    final office = await createTestOffice(tester);
     final controller = await _mountApp(tester, office);
     addTearDown(() async {
       await tester.pumpWidget(const SizedBox.shrink());
       controller.dispose();
-      await office.close();
+      await tester.runAsync(office.close);
     });
 
     expect(find.text('مكتب اليوم'), findsWidgets);
@@ -44,12 +44,12 @@ void main() {
 
   testWidgets('navigation reaches clients and a real client can be added from a quick action',
       (tester) async {
-    final office = await TestOffice.create();
+    final office = await createTestOffice(tester);
     final controller = await _mountApp(tester, office);
     addTearDown(() async {
       await tester.pumpWidget(const SizedBox.shrink());
       controller.dispose();
-      await office.close();
+      await tester.runAsync(office.close);
     });
 
     await tester.tap(find.text('الموكلون').last);
@@ -70,25 +70,28 @@ void main() {
     await tester.tap(find.text('حفظ الموكل'));
     await pumpUi(tester);
 
-    expect(await office.clients.countClients(), 1);
+    expect(
+      await tester.runAsync(() => office.clients.countClients()),
+      1,
+    );
     expect(find.text('موكل اختبار واجهة'), findsOneWidget);
   });
 
   testWidgets('home search opens a real database-backed client card', (tester) async {
-    final office = await TestOffice.create();
+    final office = await createTestOffice(tester);
     final controller = await _mountApp(tester, office);
     addTearDown(() async {
       await tester.pumpWidget(const SizedBox.shrink());
       controller.dispose();
-      await office.close();
+      await tester.runAsync(office.close);
     });
-    await office.clients.createClient(
+    await tester.runAsync(() => office.clients.createClient(
       operationId: 'widget-search-operation',
       newPerson: const PersonDraft(
         kind: PersonKind.natural,
         displayName: 'موكل اختبار بحث حقيقي',
       ),
-    );
+    ));
     controller.markDataChanged();
     await pumpUi(tester);
 
@@ -109,21 +112,23 @@ void main() {
   });
 
   testWidgets('reusing a shared identity requires an explicit user confirmation', (tester) async {
-    final office = await TestOffice.create();
-    final firstClient = await office.clients.createClient(
+    final office = await createTestOffice(tester);
+    final firstClient = (await tester.runAsync(() => office.clients.createClient(
       operationId: 'shared-identity-original',
       newPerson: const PersonDraft(
         kind: PersonKind.natural,
         displayName: 'هوية اختبار مشتركة',
         phone: '01012345678',
       ),
+    )))!;
+    await tester.runAsync(
+      () => office.database.createWorkspace('قاعدة إعادة استخدام اختبار'),
     );
-    await office.database.createWorkspace('قاعدة إعادة استخدام اختبار');
     final controller = await _mountApp(tester, office);
     addTearDown(() async {
       await tester.pumpWidget(const SizedBox.shrink());
       controller.dispose();
-      await office.close();
+      await tester.runAsync(office.close);
     });
 
     await tester.tap(find.text('الموكلون').last);
@@ -147,18 +152,22 @@ void main() {
     await tester.tap(find.text('استخدام الهوية وإضافة الموكل'));
     await pumpUi(tester);
 
-    final added = (await office.clients.listClients()).items.single;
+    final added =
+        (await tester.runAsync(() => office.clients.listClients()))!.items.single;
     expect(added.person.id, firstClient.person.id);
-    expect(await office.clients.countClients(), 1);
+    expect(
+      await tester.runAsync(() => office.clients.countClients()),
+      1,
+    );
   });
 
   testWidgets('responsive shell has no layout exception at required widths', (tester) async {
-    final office = await TestOffice.create();
+    final office = await createTestOffice(tester);
     final controller = await _mountApp(tester, office);
     addTearDown(() async {
       await tester.pumpWidget(const SizedBox.shrink());
       controller.dispose();
-      await office.close();
+      await tester.runAsync(office.close);
       tester.view.resetPhysicalSize();
       tester.view.resetDevicePixelRatio();
     });
@@ -175,12 +184,12 @@ void main() {
   });
 
   testWidgets('opening the client centre from home preserves search scope', (tester) async {
-    final office = await TestOffice.create();
+    final office = await createTestOffice(tester);
     final controller = await _mountApp(tester, office);
     addTearDown(() async {
       await tester.pumpWidget(const SizedBox.shrink());
       controller.dispose();
-      await office.close();
+      await tester.runAsync(office.close);
     });
 
     final search = find.byWidgetPredicate(

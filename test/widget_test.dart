@@ -9,13 +9,13 @@ import 'support/test_office.dart';
 
 void main() {
   testWidgets('the app shell opens the Arabic office dashboard', (tester) async {
-    final office = await TestOffice.create();
+    final office = await createTestOffice(tester);
     final controller = AppController(office.database);
-    await controller.initialize();
+    await tester.runAsync(controller.initialize);
     addTearDown(() async {
       await tester.pumpWidget(const SizedBox.shrink());
       controller.dispose();
-      await office.close();
+      await tester.runAsync(office.close);
     });
 
     await tester.pumpWidget(

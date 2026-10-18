@@ -5,9 +5,15 @@ import 'package:mizan_law/src/data/client_repository.dart';
 import 'package:mizan_law/src/data/office_database.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
+Future<TestOffice> createTestOffice(WidgetTester tester) async =>
+    (await tester.runAsync(TestOffice.create))!;
+
 Future<void> pumpUi(WidgetTester tester) async {
   for (var frame = 0; frame < 12; frame++) {
     await tester.pump(const Duration(milliseconds: 100));
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 10)),
+    );
   }
 }
 
