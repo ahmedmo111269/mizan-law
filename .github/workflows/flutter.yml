@@ -55,7 +55,20 @@ jobs:
         run: timeout --signal=TERM --kill-after=10s 120s flutter test --reporter expanded --timeout=2m test/widget_test.dart
 
       - name: Run home navigation and responsive UI tests
-        run: timeout --signal=TERM --kill-after=10s 120s flutter test --reporter expanded --timeout=2m test/widgets/home_navigation_test.dart
+        run: |
+          set +e
+          timeout --signal=TERM --kill-after=10s 120s \
+            flutter test --reporter expanded --timeout=2m test/widgets/home_navigation_test.dart \
+            > home-navigation-test.log 2>&1
+          status=$?
+          cat home-navigation-test.log
+          if [ "$status" -ne 0 ]; then
+            tail -n 40 home-navigation-test.log | while IFS= read -r line; do
+              escaped=${line//'%'/'%25'}
+              echo "::error title=Home navigation test output::$escaped"
+            done
+          fi
+          exit "$status"
 
       - name: Run SQLite migration and integrity contract tests
         run: python3 scripts/test_sqlite_contract.py
