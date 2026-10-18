@@ -43,7 +43,14 @@ jobs:
           exit "$status"
 
       - name: Run Flutter tests
-        run: flutter test --reporter expanded --timeout=2m
+        run: |
+          set +e
+          for test_file in $(find test -name '*_test.dart' -print | sort); do
+            echo "Running $test_file"
+            timeout --signal=TERM --kill-after=10s 120s flutter test --reporter expanded --timeout=2m "$test_file"
+            status=$?
+            if [ "$status" -ne 0 ]; then exit "$status"; fi
+          done
 
       - name: Run SQLite migration and integrity contract tests
         run: python3 scripts/test_sqlite_contract.py
