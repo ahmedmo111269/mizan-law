@@ -2,7 +2,7 @@
 
 ## المتطلبات
 
-- Flutter SDK 3.29 أو أحدث، مع Dart الذي يأتي معه.
+- Flutter SDK 3.33 أو أحدث، مع Dart الذي يأتي معه.
 - Python 3.10 أو أحدث لاختبارات عقد SQLite.
 - لتشغيل Windows: Windows SDK وVisual Studio مع أدوات C++ لسطح المكتب.
 - لتشغيل Android: Android SDK وجهاز أو محاكي مُهيأ عبر `flutter doctor`.
@@ -60,7 +60,7 @@ python3 scripts/test_sqlite_contract.py
 
 ## استكشاف أخطاء شائعة
 
-- **`flutter: not found`:** ثبت Flutter 3.29+ وأضفه إلى `PATH`، ثم أعد الأمر.
+- **`flutter: not found`:** ثبت Flutter 3.33+ وأضفه إلى `PATH`، ثم أعد الأمر.
 - **لا يظهر هدف Windows:** يلزم تشغيل الأمر على Windows مع أدوات C++ المطلوبة؛ لا يكفي إنشاء ملفات runner على نظام آخر.
 - **لم يظهر جهاز Android:** راجع `flutter doctor`، وتأكد من إعداد Android SDK وقبول تراخيصه.
 - **فشل جلب الحزم:** تحقق من اتصال إعداد التطوير إلى pub.dev، ثم أعد `flutter pub get`. لا يعتمد تشغيل التطبيق نفسه على خدمة مدفوعة أو خادم بعيد.

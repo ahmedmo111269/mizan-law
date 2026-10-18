@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../lib/src/data/errors.dart';
-import '../../lib/src/domain/models.dart';
+import 'package:mizan_law/src/data/errors.dart';
+import 'package:mizan_law/src/domain/models.dart';
 import '../support/test_office.dart';
 
 void main() {

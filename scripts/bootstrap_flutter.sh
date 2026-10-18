@@ -2,7 +2,7 @@
 set -eu
 
 if ! command -v flutter >/dev/null 2>&1; then
-  echo 'Flutter SDK is required. Install Flutter 3.29 or newer first.' >&2
+  echo 'Flutter SDK is required. Install Flutter 3.33 or newer first.' >&2
   exit 1
 fi
 

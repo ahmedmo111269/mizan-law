@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../lib/src/app_controller.dart';
-import '../../lib/src/domain/models.dart';
-import '../../lib/src/app.dart';
-import '../../lib/src/shared/mizan_theme.dart';
+import 'package:mizan_law/src/app.dart';
+import 'package:mizan_law/src/app_controller.dart';
+import 'package:mizan_law/src/domain/models.dart';
+import 'package:mizan_law/src/shared/mizan_theme.dart';
 import '../support/test_office.dart';
 
 Future<AppController> _mountApp(WidgetTester tester, TestOffice office) async {

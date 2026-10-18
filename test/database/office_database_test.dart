@@ -1,11 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mizan_law/src/data/client_repository.dart';
+import 'package:mizan_law/src/data/office_database.dart';
+import 'package:mizan_law/src/domain/models.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-
-import '../../lib/src/data/client_repository.dart';
-import '../../lib/src/data/office_database.dart';
-import '../../lib/src/domain/models.dart';
 
 void main() {
   setUpAll(() {

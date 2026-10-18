@@ -12,17 +12,17 @@ class WorkspaceInfo {
     required this.createdAtUtc,
   });
 
-  final String id;
-  final String name;
-  final String fileName;
-  final String createdAtUtc;
-
   factory WorkspaceInfo.fromMap(Map<String, Object?> map) => WorkspaceInfo(
         id: map['id']! as String,
         name: map['name']! as String,
         fileName: map['file_name']! as String,
         createdAtUtc: map['created_at_utc']! as String,
       );
+
+  final String id;
+  final String name;
+  final String fileName;
+  final String createdAtUtc;
 }
 
 class PersonRecord {
@@ -37,15 +37,6 @@ class PersonRecord {
     required this.revision,
   });
 
-  final String id;
-  final PersonKind kind;
-  final String displayName;
-  final String? phone;
-  final String? email;
-  final String createdAtUtc;
-  final String updatedAtUtc;
-  final int revision;
-
   factory PersonRecord.fromMap(Map<String, Object?> map) => PersonRecord(
         id: map['id']! as String,
         kind: map['kind'] == 'organization'
@@ -58,6 +49,15 @@ class PersonRecord {
         updatedAtUtc: (map['person_updated_at_utc'] ?? map['updated_at_utc'])! as String,
         revision: (map['revision'] as int?) ?? 1,
       );
+
+  final String id;
+  final PersonKind kind;
+  final String displayName;
+  final String? phone;
+  final String? email;
+  final String createdAtUtc;
+  final String updatedAtUtc;
+  final int revision;
 }
 
 class ClientRecord {
@@ -71,14 +71,6 @@ class ClientRecord {
     required this.revision,
   });
 
-  final String engagementId;
-  final PersonRecord person;
-  final ClientStatus status;
-  final String createdAtUtc;
-  final String updatedAtUtc;
-  final String statusChangedAtUtc;
-  final int revision;
-
   factory ClientRecord.fromMap(Map<String, Object?> map) => ClientRecord(
         engagementId: map['engagement_id']! as String,
         person: PersonRecord.fromMap(map),
@@ -90,6 +82,14 @@ class ClientRecord {
         statusChangedAtUtc: map['status_changed_at_utc']! as String,
         revision: (map['engagement_revision'] as int?) ?? 1,
       );
+
+  final String engagementId;
+  final PersonRecord person;
+  final ClientStatus status;
+  final String createdAtUtc;
+  final String updatedAtUtc;
+  final String statusChangedAtUtc;
+  final int revision;
 }
 
 class PersonCandidate {

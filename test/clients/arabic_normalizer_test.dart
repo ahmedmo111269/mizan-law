@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../lib/src/data/arabic_normalizer.dart';
+import 'package:mizan_law/src/data/arabic_normalizer.dart';
 
 void main() {
   test('search-only Arabic normalization preserves the entered spelling rules', () {

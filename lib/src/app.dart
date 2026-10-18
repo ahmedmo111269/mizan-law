@@ -5,9 +5,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'app_controller.dart';
 import 'data/office_database.dart';
-import 'features/clients/client_list_screen.dart';
 import 'features/clients/client_detail_screen.dart';
 import 'features/clients/client_editor_screen.dart';
+import 'features/clients/client_list_screen.dart';
 import 'features/home/home_screen.dart';
 import 'shared/mizan_theme.dart';
 

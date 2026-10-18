@@ -1,10 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mizan_law/src/data/client_repository.dart';
+import 'package:mizan_law/src/data/office_database.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-
-import '../../lib/src/data/client_repository.dart';
-import '../../lib/src/data/office_database.dart';
 
 class TestOffice {
   TestOffice(this.directory, this.database);

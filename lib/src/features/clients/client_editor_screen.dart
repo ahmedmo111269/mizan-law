@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 
 import '../../app_controller.dart';
 import '../../data/client_repository.dart';
-import '../../shared/diagnostics.dart';
 import '../../data/errors.dart';
 import '../../data/id_generator.dart';
 import '../../domain/models.dart';
+import '../../shared/diagnostics.dart';
 
 class ClientEditorScreen extends StatefulWidget {
   const ClientEditorScreen({
@@ -326,7 +326,7 @@ class _ClientEditorScreenState extends State<ClientEditorScreen> {
                   padding: const EdgeInsets.fromLTRB(20, 18, 20, 32),
                   children: <Widget>[
                     if (!widget.isEditing) ...<Widget>[
-                      _SharedIdentityNote(),
+                      const _SharedIdentityNote(),
                       const SizedBox(height: 18),
                     ],
                     if (_error != null) ...<Widget>[
@@ -345,7 +345,7 @@ class _ClientEditorScreenState extends State<ClientEditorScreen> {
                       ),
                     const SizedBox(height: 14),
                     DropdownButtonFormField<PersonKind>(
-                      value: _kind,
+                      initialValue: _kind,
                       decoration: const InputDecoration(
                         labelText: 'نوع الشخص',
                         prefixIcon: Icon(Icons.category_outlined),
@@ -565,6 +565,8 @@ class _SectionHeading extends StatelessWidget {
 }
 
 class _SharedIdentityNote extends StatelessWidget {
+  const _SharedIdentityNote();
+
   @override
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.all(14),

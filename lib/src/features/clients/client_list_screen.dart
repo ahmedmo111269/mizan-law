@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../app_controller.dart';
+import '../../data/errors.dart';
 import '../../domain/models.dart';
 
 class ClientListScreen extends StatefulWidget {

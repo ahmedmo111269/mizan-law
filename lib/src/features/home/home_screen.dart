@@ -114,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                _DevelopmentNotice(),
+                const _DevelopmentNotice(),
                 const SizedBox(height: 24),
                 Text(
                   'مكتب اليوم',
@@ -194,6 +194,8 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class _DevelopmentNotice extends StatelessWidget {
+  const _DevelopmentNotice();
+
   @override
   Widget build(BuildContext context) => DecoratedBox(
         decoration: BoxDecoration(
