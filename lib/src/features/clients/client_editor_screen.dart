@@ -368,6 +368,7 @@ class _ClientEditorScreenState extends State<ClientEditorScreen> {
                     ),
                     const SizedBox(height: 12),
                     TextFormField(
+                      key: const ValueKey<String>('client-name-field'),
                       controller: _name,
                       enabled: _selectedPerson == null,
                       autofocus: !widget.isEditing,
