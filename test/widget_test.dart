@@ -28,7 +28,7 @@ void main() {
         home: AppShell(controller: controller),
       ),
     );
-    await tester.pumpAndSettle();
+    await pumpUi(tester);
 
     expect(find.text('مكتب اليوم'), findsWidgets);
     expect(find.text('ميزان'), findsOneWidget);

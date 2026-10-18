@@ -21,7 +21,7 @@ Future<AppController> _mountApp(WidgetTester tester, TestOffice office) async {
       home: AppShell(controller: controller),
     ),
   );
-  await tester.pumpAndSettle();
+  await pumpUi(tester);
   return controller;
 }
 
@@ -53,11 +53,11 @@ void main() {
     });
 
     await tester.tap(find.text('الموكلون').last);
-    await tester.pumpAndSettle();
+    await pumpUi(tester);
     expect(find.text('لا يوجد موكلون نشطون في هذه القاعدة'), findsOneWidget);
 
     await tester.tap(find.text('إضافة موكل').last);
-    await tester.pumpAndSettle();
+    await pumpUi(tester);
     expect(find.text('ابحث قبل إنشاء هوية'), findsOneWidget);
 
     final nameField = find.byWidgetPredicate(
@@ -66,9 +66,9 @@ void main() {
     );
     await tester.enterText(nameField, 'موكل اختبار واجهة');
     await tester.pump(const Duration(milliseconds: 350));
-    await tester.pumpAndSettle();
+    await pumpUi(tester);
     await tester.tap(find.text('حفظ الموكل'));
-    await tester.pumpAndSettle();
+    await pumpUi(tester);
 
     expect(await office.clients.countClients(), 1);
     expect(find.text('موكل اختبار واجهة'), findsOneWidget);
@@ -90,7 +90,7 @@ void main() {
       ),
     );
     controller.markDataChanged();
-    await tester.pumpAndSettle();
+    await pumpUi(tester);
 
     final search = find.byWidgetPredicate(
       (widget) => widget is TextField &&
@@ -98,11 +98,11 @@ void main() {
     );
     await tester.enterText(search, 'موكل اختبار بحث');
     await tester.pump(const Duration(milliseconds: 320));
-    await tester.pumpAndSettle();
+    await pumpUi(tester);
     expect(find.text('موكل اختبار بحث حقيقي'), findsOneWidget);
 
     await tester.tap(find.text('موكل اختبار بحث حقيقي'));
-    await tester.pumpAndSettle();
+    await pumpUi(tester);
     expect(find.text('بطاقة الموكل'), findsOneWidget);
     expect(find.text('موكل اختبار بحث حقيقي'), findsOneWidget);
     expect(find.textContaining('لم تُنفّذ وحداتها بعد'), findsOneWidget);
@@ -127,25 +127,25 @@ void main() {
     });
 
     await tester.tap(find.text('الموكلون').last);
-    await tester.pumpAndSettle();
+    await pumpUi(tester);
     await tester.tap(find.text('إضافة موكل').last);
-    await tester.pumpAndSettle();
+    await pumpUi(tester);
     final nameField = find.byWidgetPredicate(
       (widget) =>
           widget is InputDecorator && widget.decoration.labelText == 'الاسم',
     );
     await tester.enterText(nameField, 'هوية اختبار مشتركة');
     await tester.pump(const Duration(milliseconds: 350));
-    await tester.pumpAndSettle();
+    await pumpUi(tester);
     expect(find.text('استخدام'), findsOneWidget);
 
     await tester.tap(find.text('استخدام'));
-    await tester.pumpAndSettle();
+    await pumpUi(tester);
     expect(find.text('تأكيد استخدام هوية مشتركة'), findsOneWidget);
     await tester.tap(find.text('تأكيد أنها الهوية نفسها'));
-    await tester.pumpAndSettle();
+    await pumpUi(tester);
     await tester.tap(find.text('استخدام الهوية وإضافة الموكل'));
-    await tester.pumpAndSettle();
+    await pumpUi(tester);
 
     final added = (await office.clients.listClients()).items.single;
     expect(added.person.id, firstClient.person.id);
@@ -167,7 +167,7 @@ void main() {
       tester.view.devicePixelRatio = 2;
       tester.view.physicalSize = Size(width * 2, 1600);
       await tester.pump();
-      await tester.pumpAndSettle();
+      await pumpUi(tester);
       expect(tester.takeException(), isNull, reason: 'layout failed at $width px');
       expect(find.text('مكتب اليوم'), findsWidgets);
       expect(find.text('ميزان'), findsOneWidget);
@@ -189,7 +189,7 @@ void main() {
     );
     await tester.enterText(search, 'نص بحث اختبار');
     await tester.tap(find.text('البحث في مركز الموكلين'));
-    await tester.pumpAndSettle();
+    await pumpUi(tester);
     expect(find.text('بحث في موكلي هذه القاعدة'), findsOneWidget);
     expect(find.text('نص بحث اختبار'), findsOneWidget);
   });

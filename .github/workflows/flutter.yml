@@ -12,6 +12,7 @@ permissions:
 jobs:
   test-and-android:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Check out source
         uses: actions/checkout@v4
@@ -42,7 +43,7 @@ jobs:
           exit "$status"
 
       - name: Run Flutter tests
-        run: flutter test --reporter expanded
+        run: flutter test --reporter expanded --timeout=2m
 
       - name: Run SQLite migration and integrity contract tests
         run: python3 scripts/test_sqlite_contract.py
